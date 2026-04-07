@@ -1,0 +1,21 @@
+{
+    "name": "TinyTex",
+    "id": "tinytex",
+    "version": "0.0.1",
+    "description": "TinyTeX feature",
+  "options": {
+    "TINYTEX_INSTALLER": {
+      "type": "string",
+      "proposals": [
+        "TinyTeX-0",
+        "TinyTeX-1",
+        "TinyTeX",
+        "TinyTeX-2"
+      ],
+      "description": "Select a TinyTex installer."
+    }
+},
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils"
+    ]
+}

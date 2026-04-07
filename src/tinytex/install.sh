@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------------------------------------------------------------
+# All code in this repository and TinyTeX are licensed under GPL-2. Per copying conditions of TeX Live, we (TinyTeX authors) want to clarify that:
+
+# We did not make changes to the TeX Live distribution, but basically packaged up a subset of its packages and redistributed them as TinyTeX.
+
+# We do not claim copyright on TinyTeX. Again, TinyTeX is a subset of TeX Live (https://tug.org/texlive/), and TeX Live is developed as a joint effort by all TeX user groups.
+
+# Note that TinyTeX does not bundle the source code of LaTeX packages (to keep the size small). If you do want to obtain the source, you may find them on CTAN. Alternatively, you can reinstall a package with the command tlmgr install --reinstall --with-src <PKG> to obtain the source.
+#-------------------------------------------------------------------------------------------------------------
+
+#!/bin/bash
+
+# --- CONFIGURATION ---
+# TINYTEX_INSTALLER can be "latest" or a specific release tag
+# e.g., "2024.03" or "latest"
+TINYTEX_INSTALLER="TinyTeX-1"
+INSTALL_DIR="$HOME/.TinyTeX"
+SHELL_RC="$HOME/.bashrc"
+
+echo "Starting TinyTeX setup..."
+
+# 1. Install Dependencies
+# These are required for Perl and SSL communication via tlmgr
+echo "Checking system dependencies..."
+sudo apt update
+sudo apt install -y curl perl wget tar libnet-ssleay-perl libcrypt-ssleay-perl
+
+# 2. Execute Installation
+# We pass the TINYTEX_INSTALLER value to the TINYTEX_VERSION env var 
+# which the official script uses to pull specific builds.
+echo "Downloading TinyTeX (Installer Target: $TINYTEX_INSTALLER)..."
+if [ "$TINYTEX_INSTALLER" = "TinyTeX-1" ]; then
+    curl -sL "https://yihui.org/tinytex/install-bin-unix.sh" | sh
+else
+    curl -sL "https://yihui.org/tinytex/install-bin-unix.sh" | TINYTEX_VERSION=$TINYTEX_INSTALLER sh
+fi
+
+# 3. Resolve Binary Path
+# Locates the architecture-specific folder (e.g., x86_64-linux or aarch64-linux)
+BIN_PATH=$(find "$INSTALL_DIR/bin" -maxdepth 1 -type d -name "*-linux" | head -n 1)
+
+if [ -z "$BIN_PATH" ]; then
+    echo "Error: Installation failed. Binary directory not found."
+    exit 1
+fi
+
+# 4. Update .bashrc
+# Adds the export command only if it's not already present
+PATH_LINE="export PATH=\"\$PATH:$BIN_PATH\""
+
+if ! grep -qF "$BIN_PATH" "$SHELL_RC"; then
+    echo "Updating $SHELL_RC..."
+    echo "" >> "$SHELL_RC"
+    echo "# TinyTeX" >> "$SHELL_RC"
+    echo "$PATH_LINE" >> "$SHELL_RC"
+    echo "Path successfully added to $SHELL_RC."
+else
+    echo "TinyTeX path is already configured in $SHELL_RC."
+fi
+
+# 5. Finalize Session
+export PATH="$PATH:$BIN_PATH"
+echo "--- Verification ---"
+if command -v pdflatex &> /dev/null; then
+    echo "TinyTeX is ready to use."
+    pdflatex --version | head -n 1
+else
+    echo "Installation finished, but you may need to run 'source $SHELL_RC' to use pdflatex in this terminal."
+fi
