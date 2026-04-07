@@ -15,7 +15,7 @@
 # TINYTEX_INSTALLER can be "latest" or a specific release tag
 # e.g., "2024.03" or "latest"
 TINYTEX_INSTALLER="TinyTeX-1"
-BIN_PATH="home/bin"
+BIN_PATH="$HOME/bin"
 SHELL_RC="$HOME/.bashrc"
 
 echo "Starting TinyTeX setup..."
@@ -31,9 +31,9 @@ sudo apt install -y curl perl wget tar libnet-ssleay-perl libcrypt-ssleay-perl
 # which the official script uses to pull specific builds.
 echo "Downloading TinyTeX (Installer Target: $TINYTEX_INSTALLER)..."
 if [ "$TINYTEX_INSTALLER" = "TinyTeX-1" ]; then
-    curl -sL "https://yihui.org/tinytex/install-bin-unix.sh" | sh
+    wget -qO- "https://tinytex.yihui.org/install-bin-unix.sh" | sh
 else
-    curl -sL "https://yihui.org/tinytex/install-bin-unix.sh" | TINYTEX_VERSION=$TINYTEX_INSTALLER sh
+    wget -qO- "https://tinytex.yihui.org/install-bin-unix.sh" | TINYTEX_VERSION=$TINYTEX_INSTALLER sh
 fi
 
 # 4. Update .bashrc
