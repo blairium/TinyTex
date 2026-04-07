@@ -12,9 +12,7 @@
 #!/bin/bash
 
 # --- CONFIGURATION ---
-# TINYTEX_INSTALLER can be "latest" or a specific release tag
-# e.g., "2024.03" or "latest"
-TINYTEX_INSTALLER="TinyTeX-1"
+export TINYTEX_INSTALLER="${TINYTEX_INSTALLER:-TinyTeX-1}"
 BIN_PATH="$HOME/bin"
 SHELL_RC="$HOME/.bashrc"
 
@@ -30,11 +28,9 @@ sudo apt install -y curl perl wget tar libnet-ssleay-perl libcrypt-ssleay-perl
 # We pass the TINYTEX_INSTALLER value to the TINYTEX_VERSION env var 
 # which the official script uses to pull specific builds.
 echo "Downloading TinyTeX (Installer Target: $TINYTEX_INSTALLER)..."
-if [ "$TINYTEX_INSTALLER" = "TinyTeX-1" ]; then
-    wget -qO- "https://tinytex.yihui.org/install-bin-unix.sh" | sh
-else
-    wget -qO- "https://tinytex.yihui.org/install-bin-unix.sh" | TINYTEX_VERSION=$TINYTEX_INSTALLER sh
-fi
+
+wget -qO- "https://tinytex.yihui.org/install-bin-unix.sh" | sh
+
 
 # 4. Update .bashrc
 # Adds the export command only if it's not already present
