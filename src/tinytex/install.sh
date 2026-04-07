@@ -15,7 +15,7 @@
 # TINYTEX_INSTALLER can be "latest" or a specific release tag
 # e.g., "2024.03" or "latest"
 TINYTEX_INSTALLER="TinyTeX-1"
-INSTALL_DIR="$HOME/.TinyTeX"
+BIN_PATH="home/bin"
 SHELL_RC="$HOME/.bashrc"
 
 echo "Starting TinyTeX setup..."
@@ -36,15 +36,6 @@ else
     curl -sL "https://yihui.org/tinytex/install-bin-unix.sh" | TINYTEX_VERSION=$TINYTEX_INSTALLER sh
 fi
 
-# 3. Resolve Binary Path
-# Locates the architecture-specific folder (e.g., x86_64-linux or aarch64-linux)
-BIN_PATH=$(find "$INSTALL_DIR/bin" -maxdepth 1 -type d -name "*-linux" | head -n 1)
-
-if [ -z "$BIN_PATH" ]; then
-    echo "Error: Installation failed. Binary directory not found."
-    exit 1
-fi
-
 # 4. Update .bashrc
 # Adds the export command only if it's not already present
 PATH_LINE="export PATH=\"\$PATH:$BIN_PATH\""
@@ -62,9 +53,9 @@ fi
 # 5. Finalize Session
 export PATH="$PATH:$BIN_PATH"
 echo "--- Verification ---"
-if command -v pdflatex &> /dev/null; then
+if command -v tlmgr &> /dev/null; then
     echo "TinyTeX is ready to use."
-    pdflatex --version | head -n 1
+    tlmmgr --version | head -n 1
 else
     echo "Installation finished, but you may need to run 'source $SHELL_RC' to use pdflatex in this terminal."
 fi
