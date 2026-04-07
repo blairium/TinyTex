@@ -1,9 +1,9 @@
 {
-    "hello": {
+    "tinytex_2": {
         "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
         "features": {
-            "hello": {
-                "greeting": "hello"
+            "tinytex": {
+                "TINYTEX_INSTALLER": "TinyTeX-2"
             }
         }
     }
