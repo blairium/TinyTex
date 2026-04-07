@@ -46,7 +46,13 @@ else
 fi
 
 # 5. Finalize Session
-export PATH="$PATH:$BIN_PATH"
+TINYTEX_BIN=$(find $HOME/.TinyTeX -name "pdflatex" -printf '%h\n' | head -n 1)
+
+# Add it to the very top of .bashrc
+if [ -n "$TINYTEX_BIN" ]; then
+    echo "export PATH=\"$TINYTEX_BIN:\$PATH\"" >> ~/.bashrc
+    echo "Permanent path added. Restart your terminal or run 'source ~/.bashrc'"
+fi
 
 echo "--- Verification ---"
 if command -v tlmgr &> /dev/null; then
@@ -56,3 +62,4 @@ else
     echo "Installation finished, but 'tlmgr' is not reachable in the current subshell."
     echo "Try running: source $SHELL_RC"
 fi
+tlmgr install cm-super type1cm sfmath underscore
