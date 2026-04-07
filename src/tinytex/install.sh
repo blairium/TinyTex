@@ -55,7 +55,7 @@ export PATH="$PATH:$BIN_PATH"
 echo "--- Verification ---"
 if command -v tlmgr &> /dev/null; then
     echo "TinyTeX is ready to use."
-    tlmmgr --version | head -n 1
+    tlmgr --version | head -n 1
 else
     echo "Installation finished, but you may need to run 'source $SHELL_RC' to use pdflatex in this terminal."
 fi
