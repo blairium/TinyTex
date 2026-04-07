@@ -13,6 +13,8 @@
 
 # --- CONFIGURATION ---
 export TINYTEX_INSTALLER="${TINYTEX_INSTALLER:-TinyTeX-1}"
+
+
 BIN_PATH="$HOME/bin"
 SHELL_RC="$HOME/.bashrc"
 
@@ -21,19 +23,16 @@ echo "Starting TinyTeX setup..."
 # 1. Install Dependencies
 # These are required for Perl and SSL communication via tlmgr
 echo "Checking system dependencies..."
-sudo apt update
-sudo apt install -y curl perl wget tar libnet-ssleay-perl libcrypt-ssleay-perl
+apt update
+apt install -y wget ghostscript dvipng
 
 # 2. Execute Installation
-# We pass the TINYTEX_INSTALLER value to the TINYTEX_VERSION env var 
-# which the official script uses to pull specific builds.
-echo "Downloading TinyTeX (Installer Target: $TINYTEX_INSTALLER)..."
-
+# We use the -s prefix to the installer to ensure it's a "silent" but standard install
+echo "Downloading and installing TinyTeX..."
 wget -qO- "https://tinytex.yihui.org/install-bin-unix.sh" | sh
 
 
 # 4. Update .bashrc
-# Adds the export command only if it's not already present
 PATH_LINE="export PATH=\"\$PATH:$BIN_PATH\""
 
 if ! grep -qF "$BIN_PATH" "$SHELL_RC"; then
@@ -48,10 +47,12 @@ fi
 
 # 5. Finalize Session
 export PATH="$PATH:$BIN_PATH"
+
 echo "--- Verification ---"
 if command -v tlmgr &> /dev/null; then
     echo "TinyTeX is ready to use."
-    tlmgr --version | head -n 1
+    tlmgr --version 
 else
-    echo "Installation finished, but you may need to run 'source $SHELL_RC' to use pdflatex in this terminal."
+    echo "Installation finished, but 'tlmgr' is not reachable in the current subshell."
+    echo "Try running: source $SHELL_RC"
 fi
