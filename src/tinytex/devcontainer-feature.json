@@ -12,6 +12,7 @@
         "TinyTeX",
         "TinyTeX-2"
       ],
+      "default": "TinyTeX-1",
       "description": "Select a TinyTex installer."
     }
 },
